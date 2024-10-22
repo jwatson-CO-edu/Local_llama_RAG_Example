@@ -7,7 +7,10 @@ def copy_pdfs():
     source_dir = environ["_RAG_PDF_SOURCE"]
     dest_dir   = environ["_RAG_PDF_DESTIN"]
     verbose    = bool( environ["_RAG_VERBOSE"] )
-    limit      = int( environ["_RAG_DOC_LIMIT"] )
+    count      = int( environ["_RAG_DOCDB_COUNT" ] )
+    rem        = int( environ["_RAG_DOCDB_REMAIN"] )
+
+    
 
     # Create destination directory if it doesn't exist
     if not path.exists( dest_dir ):
@@ -19,6 +22,13 @@ def copy_pdfs():
     for dirpath, dirnames, filenames in walk( source_dir ):
         for file in filenames:
             if file.lower().endswith('.pdf'):
+
+                i += 1
+                if i <= count:
+                    continue
+                if (not verbose) and (i % d == 0):
+                    print( '.', end='', flush = True )
+                
                 # Full path of the source PDF file
                 src_file = path.join( dirpath, file )
                 
@@ -29,18 +39,15 @@ def copy_pdfs():
                         shutil.copy( src_file, dest_dir )
                         if verbose:
                             print(f"Copied: {src_file}")
+                        rem -= 1
+                        if rem <= 0:
+                            return None
                     else:
                         if verbose:
                             print(f"Exists: {destPath}")
                 except Exception as e:
                     print(f"Error copying {src_file}: {e}")
-                i += 1
-                if i > limit:
-                    if not verbose:
-                        print()
-                    return None
-                if (not verbose) and (i % d == 0):
-                    print( '.', end='', flush = True )
+                
     if not verbose:
         print()
 
