@@ -20,6 +20,8 @@ def copy_pdfs():
     i =  0
     d = 50
     for dirpath, dirnames, filenames in walk( source_dir ):
+        dirnames.sort()  # Sort subdirectories in-place
+        filenames.sort()  # Sort files in-place
         for file in filenames:
             if file.lower().endswith('.pdf'):
 
