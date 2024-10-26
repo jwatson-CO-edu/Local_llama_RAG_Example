@@ -24,7 +24,6 @@ def copy_pdfs():
         filenames.sort()  # Sort files in-place
         for file in filenames:
             if file.lower().endswith('.pdf'):
-
                 i += 1
                 if i <= count:
                     continue
