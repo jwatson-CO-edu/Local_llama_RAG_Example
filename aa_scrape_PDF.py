@@ -10,8 +10,6 @@ def copy_pdfs():
     count      = int( environ["_RAG_DOCDB_COUNT" ] )
     rem        = int( environ["_RAG_DOCDB_REMAIN"] )
 
-    
-
     # Create destination directory if it doesn't exist
     if not path.exists( dest_dir ):
         makedirs( dest_dir )
