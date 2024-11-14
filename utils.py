@@ -73,8 +73,9 @@ class RAG_State:
                 dct = json.load(f)
             if dct is not None:
                 return RAG_State(
-                    docPaths   = dct['libDocs'],
-                    pageImages = dct['pages']
+                    docPaths   = dct['libDocs'] if ('libDocs' in dct) else list(),
+                    pageImages = dct['pages'] if ('pages' in dct) else dict(),
+                    passages   = { 'pages': set( dct['passages']['pages'] )} if ('passages' in dct) else {'pages': set([]),}, # JSON does not support `set`
                 )
         except FileNotFoundError as e:
             print( f"Could not load {path}!\n{e}" )
@@ -84,10 +85,11 @@ class RAG_State:
             return None
             
     
-    def __init__( self, docPaths = None, pageImages = None ):
+    def __init__( self, docPaths = None, pageImages = None, passages = None ):
         """ Init state """
         self.docPaths : list[str] = list() if (docPaths is None) else docPaths
         self.pgImgs   : dict      = dict() if (pageImages is None) else pageImages
+        self.passages : set       = {'pages': set([]),} if (pageImages is None) else passages # JSON does not support `set`
 
     
     def save_state( self, path ):
@@ -95,6 +97,7 @@ class RAG_State:
             json.dump( {
                 'libDocs' : self.docPaths,
                 'pages'   : self.pgImgs,
+                'passages': { 'pages': list( self.passages['pages'] )}, # JSON does not support `set`
             }, f, indent = 4 )
 
 
